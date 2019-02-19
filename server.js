@@ -49,12 +49,34 @@ app.get("/", function (req, res) {
     });
 });
 
-app.post("/", function (req, res) {
-    connection.query("INSERT INTO burgers (burger_name) VALUES(?)", [req.body.burg], function (err, result) {
-        if (err) throw err;
-        res.redirect("/")
+// create new burger
+app.post("/burgers", function (req, res) {
+    connection.query("INSERT INTO burgers (burger_name) VALUES(?)", [req.body.burger_name], function (err, result) {
+        if (err) {
+            return res.status(500).end();
+        }
+
+        // Send back the ID of the new todo
+        // res.redirect("/")
+        res.json({
+            id: result.insertId
+        });
+
     });
 });
+
+app.delete("/burgers/:id", function (req, res) {
+    connection.query("DELETE FROM burgers WHERE id = ?", [req.params.id], function (err, data) {
+        if (err) throw err;
+        else if (data.affectedRows === 0) {
+            // If no rows were changed, then the ID must not exist, so 404
+            return res.status(404).end();
+        }
+        res.status(200).end();
+
+    })
+})
+
 app.listen(PORT, function () {
     console.log("Server listening on localhost:" + PORT)
 })
