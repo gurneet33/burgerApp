@@ -1,25 +1,37 @@
-<h1>Eat-da-Burger</h1>
-<ul>
-    {{#each burgers}}
-    <li>
-        {{!-- <p>ID:{{this.id}}</p> --}}
-        <p> {{this.id}}. {{this.burger_name}}</p>
+<style>
+    li {
+        list-style: none;
+    }
+</style>
+<div class="container">
+    <h1 class="offset-1">Eat-da-Burger</h1>
+    <hr>
+    {{!-- <div><img src="/public/Images/burgerimg.png"></div> --}}
+    <ul>
+        {{#each burgers}}
+        <li>
+            <div class="row">
+                <p class="col-3"> {{this.burger_name}}</p>
+                {{!-- <a href="api/burgers/{{this.id}}"> --}}
+                <button data-burgerid="{{this.id}}" type="button" class="delete" name='delete'><i
+                        class="fas fa-hamburger"></i></button>
+                <p id="text" style="margin:10px">devour it</p>
+            </div>
+        </li>
+        <hr>
+        {{/each}}
+    </ul>
 
-        {{!-- <a href="api/burgers/{{this.id}}"> --}}
-        <button data-burgerid="{{this.id}}" type="button" class="delete" name='delete'>X</button>
-        devour it
+    <form action="/" method="POST" id="createburger" class="button-size">
+        <div class="container text-center">
+            <div class="row"> <textarea class="offset-1 col-3" type="text" name="burg"></textarea></div>
+            <div class="row"><button class="offset-1 col-3" type="submit">Submit</button>
+            </div>
+        </div>
 
-    </li>
-    {{/each}}
-</ul>
+    </form>
+</div>
 
-<form action="/" method="POST" id="createburger" class="button-size">
-
-    <textarea type="text" name="burg"></textarea>
-    <button type="submit">Submit</button>
-
-
-</form>
 
 <script>
     $(".delete").on("click", function (event) {
@@ -47,14 +59,13 @@
         var newBurger = {
             burger: $("#createburger [name=burg]").val().trim()
         };
-
+        console.log("newburg", newBurger)
         // Send the POST request.
         $.ajax("/burgers", {
             type: "POST",
             data: newBurger
         }).then(
             function () {
-                console.log("created new burger" + newBurger);
                 // Reload the page to get the updated list
                 location.reload();
             }
